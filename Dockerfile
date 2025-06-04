@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y ca-certificates
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     FLASK_APP=run.py \
-    FLASK_ENV=production
-
+    FLASK_ENV=production \
+    TZ=Europe/Paris
 
 # Commande pour démarrer l'application
 CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT} run:app"]

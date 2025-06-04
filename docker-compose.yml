@@ -40,6 +40,23 @@ services:
     networks:
       - app-network
 
+  # Service pour le batch scheduler
+  batch:
+    build: .
+    command: python app/services/batch_scheduler.py
+    environment:
+      - FLASK_APP=${FLASK_APP}
+      - FLASK_ENV=${FLASK_ENV}
+      - SECRET_KEY=${SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+      - PORT=${PORT}
+    volumes:
+      - .:/app
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
 volumes:
   mongodb_data:
     driver: local

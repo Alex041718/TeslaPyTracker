@@ -27,6 +27,10 @@ db.createCollection("stock_history_model3", {
           bsonType: "int",
           description: "Année du stock historisé"
         },
+        version: {
+          bsonType: "string",
+          description: "Version de la voiture ex M3WD"
+        },
         data: {
           bsonType: "object",
           description: "Le JSON brut du stock de voitures"
