@@ -44,6 +44,7 @@ services:
   batch:
     build: .
     command: python app/services/batch_scheduler.py
+    restart: always
     environment:
       - FLASK_APP=${FLASK_APP}
       - FLASK_ENV=${FLASK_ENV}
