@@ -1,59 +1,111 @@
-# Application Flask avec MongoDB
+# Tesla Tracker Python
 
-Cette application est une API RESTful construite avec Flask et MongoDB suivant une architecture en couches.
+## Configuration du Service Systemd sur Raspberry Pi
 
-## Structure du projet
+Pour assurer que l'application continue de fonctionner après la déconnexion SSH et redémarre automatiquement après un reboot, suivez ces étapes pour configurer un service systemd.
 
-```
-project/
-├── app/
-│   ├── __init__.py          # Factory pattern pour créer l'application Flask
-│   ├── config.py            # Configuration de l'application
-│   ├── controllers/         # Gestion des routes et des requêtes HTTP
-│   │   └── user_controller.py
-│   ├── services/            # Logique métier
-│   │   └── user_service.py
-│   ├── models/              # Interaction avec la base de données
-│   │   └── user_model.py
-│   ├── schemas/             # Validation et sérialisation des données
-│   │   └── user_schema.py
-│   └── utils/               # Fonctions utilitaires
-│       └── helpers.py
-├── tests/                   # Tests unitaires
-│   └── test_user.py
-├── run.py                   # Point d'entrée de l'application
-└── requirements.txt         # Dépendances du projet
+### Prérequis
+
+- Docker et Docker Compose installés sur le Raspberry Pi
+- Droits sudo sur le Raspberry Pi
+- Le projet cloné dans un répertoire sur le Raspberry Pi
+
+### Étapes d'Installation
+
+1. **Créer le fichier service systemd**
+
+```bash
+sudo nano /etc/systemd/system/tesla-tracker.service
 ```
 
-## Installation
+2. **Copier la configuration suivante** (ajustez le chemin et l'utilisateur selon votre configuration)
 
-1. Cloner le dépôt
-2. Créer un environnement virtuel Python:
-   ```
-   python3 -m venv venv
-   source venv/bin/activate  
-   ```
-3. Installer les dépendances:
-   ```
-   pip install -r requirements.txt
-   ```
-4. S'assurer que MongoDB est installé et en cours d'exécution
-5. Lancer l'application:
-   ```
-   python3 run.py
-   ```
+```ini
+[Unit]
+Description=Tesla Tracker Docker Compose
+Requires=docker.service
+After=docker.service network.target
 
-## Endpoints API
+[Service]
+Type=simple
+User=pi    # Utilisateur par défaut sur Raspberry Pi
+Group=docker
+WorkingDirectory=/home/pi/TeslaPyTracker    # Ajustez selon votre chemin d'installation
+Environment="PATH=/usr/bin:/usr/local/bin"    # Assure l'accès aux commandes docker
+ExecStart=/usr/bin/docker compose up
+ExecStop=/usr/bin/docker compose down
+Restart=always
+RestartSec=10
 
-- `GET /api/users/` - Récupérer tous les utilisateurs
-- `GET /api/users/<id>` - Récupérer un utilisateur spécifique
-- `POST /api/users/` - Créer un nouvel utilisateur
-- `PUT /api/users/<id>` - Mettre à jour un utilisateur
-- `DELETE /api/users/<id>` - Supprimer un utilisateur
-
-## Tests
-
-Exécuter les tests unitaires:
+[Install]
+WantedBy=multi-user.target
 ```
-python -m pytest
+
+3. **Activer et démarrer le service**
+
+```bash
+# Recharger la configuration systemd
+sudo systemctl daemon-reload
+
+# Activer le service pour qu'il démarre au boot
+sudo systemctl enable tesla-tracker.service
+
+# Démarrer le service
+sudo systemctl start tesla-tracker.service
 ```
+
+### Commandes Utiles
+
+**Vérifier l'état du service :**
+```bash
+sudo systemctl status tesla-tracker.service
+```
+
+**Consulter les logs :**
+```bash
+# Voir les logs en temps réel
+journalctl -u tesla-tracker.service -f
+
+# Voir les dernières entrées
+journalctl -u tesla-tracker.service -n 50
+```
+
+**Redémarrer le service :**
+```bash
+sudo systemctl restart tesla-tracker.service
+```
+
+**Arrêter le service :**
+```bash
+sudo systemctl stop tesla-tracker.service
+```
+
+### Résolution des Problèmes Courants
+
+1. **Le service ne démarre pas**
+   - Vérifiez les logs : `journalctl -u tesla-tracker.service -n 50`
+   - Vérifiez que les chemins dans le fichier service sont corrects
+   - Assurez-vous que l'utilisateur a les droits nécessaires
+   - Si vous obtenez une erreur USER (status=217), exécutez :
+     ```bash
+     sudo usermod -aG docker pi
+     sudo chown -R pi:pi /home/pi/TeslaPyTracker
+     ```
+
+2. **Erreur de permission Docker**
+   - Assurez-vous que votre utilisateur fait partie du groupe docker :
+     ```bash
+     sudo usermod -aG docker votre_utilisateur
+     ```
+   - Déconnectez-vous et reconnectez-vous pour que les changements prennent effet
+
+3. **Les conteneurs ne redémarrent pas automatiquement**
+   - Vérifiez que `restart: always` est configuré dans docker-compose.yml pour chaque service
+   - Assurez-vous que le service systemd a `Restart=always` dans sa configuration
+
+### Notes Importantes
+
+- Le service redémarrera automatiquement en cas d'erreur après 10 secondes (configurable via `RestartSec`)
+- Les logs sont conservés dans journald et peuvent être consultés même après un redémarrage
+- Le service démarre automatiquement au boot du Raspberry Pi
+- La connexion SSH peut être fermée sans affecter le fonctionnement des conteneurs
