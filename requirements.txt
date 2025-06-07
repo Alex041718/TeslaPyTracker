@@ -10,3 +10,5 @@ setuptools>=65.5.0
 requests
 apscheduler
 pytz
+flask-smorest>=0.42.0
+numpy>=1.24.0

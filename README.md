@@ -1,5 +1,40 @@
 # Tesla Tracker Python
 
+## API Documentation avec Swagger UI
+
+L'application expose une interface Swagger UI qui permet de :
+- Explorer les endpoints disponibles
+- Tester les requêtes directement depuis l'interface
+- Consulter les schémas de données
+- Comprendre les paramètres acceptés par chaque endpoint
+
+### Accès à l'Interface Swagger
+
+Une fois l'application démarrée avec Docker Compose :
+```bash
+docker-compose up -d
+```
+
+L'interface Swagger UI est accessible à :
+```
+http://localhost:${PORT}/api/docs/swagger
+```
+où ${PORT} est le port défini dans votre fichier .env
+
+### Endpoints Disponibles
+
+#### Graphes
+- `GET /api/graphs/min-price` : Évolution du prix minimum des Tesla
+  - Paramètres :
+    - year (optionnel) : Année à filtrer
+    - version (optionnel) : Version Tesla spécifique
+    - points (optionnel, défaut: 25) : Nombre de points souhaités pour le graphe
+
+La réponse inclut :
+- Métadonnées (nombre total de points, points normalisés)
+- Points du graphe (timestamp, prix, description)
+- Liens de navigation
+
 ## Configuration du Service Systemd sur Raspberry Pi
 
 Pour assurer que l'application continue de fonctionner après la déconnexion SSH et redémarre automatiquement après un reboot, suivez ces étapes pour configurer un service systemd.
@@ -27,15 +62,13 @@ Requires=docker.service
 After=docker.service network.target
 
 [Service]
-Type=simple
-User=pi    # Utilisateur par défaut sur Raspberry Pi
+Type=oneshot
+RemainAfterExit=yes
+User=pi
 Group=docker
-WorkingDirectory=/home/pi/TeslaPyTracker    # Ajustez selon votre chemin d'installation
-Environment="PATH=/usr/bin:/usr/local/bin"    # Assure l'accès aux commandes docker
-ExecStart=/usr/bin/docker compose up
+WorkingDirectory=/home/pi/TeslaPyTracker
+ExecStart=/usr/bin/docker compose up --detach
 ExecStop=/usr/bin/docker compose down
-Restart=always
-RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
@@ -109,3 +142,9 @@ sudo systemctl stop tesla-tracker.service
 - Les logs sont conservés dans journald et peuvent être consultés même après un redémarrage
 - Le service démarre automatiquement au boot du Raspberry Pi
 - La connexion SSH peut être fermée sans affecter le fonctionnement des conteneurs
+
+
+Mode rootless Docker : si vous utilisez Docker en mode non-root (rootless), le démon Docker s’arrête par défaut quand la session utilisateur se termine. Dans ce cas, il faut activer le linger pour que le service continue de tourner après déconnexion. Exécutez par exemple :
+```bash
+sudo loginctl enable-linger pi
+```
