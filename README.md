@@ -67,7 +67,7 @@ RemainAfterExit=yes
 User=pi
 Group=docker
 WorkingDirectory=/home/pi/TeslaPyTracker
-ExecStart=/usr/bin/docker compose up --detach
+ExecStart=/usr/bin/docker compose up --detach --build
 ExecStop=/usr/bin/docker compose down
 
 [Install]
