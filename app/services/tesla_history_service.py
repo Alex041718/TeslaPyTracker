@@ -57,39 +57,33 @@ class TeslaHistoryService:
             'TE': 'trailers'
         }
         
-        max_retries = 5  # Nombre maximum de tentatives en cas d'échec ou de rate limiting
-        base_delay = 5   # Délai de base (en secondes) pour le backoff exponentiel
+        max_retries = 8  # Augmentation du nombre de tentatives
+        base_delay = 20  # Augmentation du délai de base
         for attempt in range(1, max_retries + 1):
             try:
-                # Appel à l'API Tesla
-                response = requests.get(api_url, headers=headers, timeout=90)
+                # Appel à l'API Tesla avec un timeout plus long
+                response = requests.get(api_url, headers=headers, timeout=180)  # Timeout doublé
                 print(f"[Tesla API] Tentative {attempt}, status: {response.status_code}")
                 # Vérification du rate limiting (erreur 429) AVANT raise_for_status()
                 if response.status_code == 429:
-                    # Si le header Retry-After est présent, on l'utilise comme délai
                     retry_after = response.headers.get('Retry-After')
                     if retry_after:
                         try:
                             delay = int(retry_after)
                         except ValueError:
-                            # Si le header n'est pas un entier, on utilise le backoff exponentiel
                             delay = base_delay * (2 ** (attempt - 1))
                     else:
-                        # Sinon, on applique un backoff exponentiel classique
                         delay = base_delay * (2 ** (attempt - 1))
                     print(f"[Tesla API] 429 reçu, attente de {delay} secondes avant retry...")
-                    # Si c'est la dernière tentative, on abandonne
                     if attempt == max_retries:
                         print("[Tesla API] Nombre maximum de tentatives atteint. Abandon.")
                         return None
                     time.sleep(delay)
-                    continue  # On retente l'appel
-                # Si ce n'est pas un 429, on vérifie les autres erreurs HTTP
+                    continue
                 response.raise_for_status()
-                data = response.json()  # On récupère la réponse JSON
-                break  # Succès, on sort de la boucle
+                data = response.json()
+                break
             except requests.exceptions.HTTPError as e:
-                # Gestion explicite du 429 même si c'est une exception
                 if hasattr(e.response, 'status_code') and e.response.status_code == 429:
                     retry_after = e.response.headers.get('Retry-After')
                     if retry_after:
@@ -114,27 +108,21 @@ class TeslaHistoryService:
                     print(f"[Tesla API] Attente de {delay} secondes avant retry...")
                     time.sleep(delay)
             except Exception as e:
-                # Gestion des autres exceptions (réseau, parsing, etc.)
                 print(f"Erreur lors de l'appel API Tesla (tentative {attempt}): {e}")
                 if attempt == max_retries:
                     print("[Tesla API] Nombre maximum de tentatives atteint. Abandon.")
                     return None
-                # Backoff exponentiel en cas d'erreur
                 delay = base_delay * (2 ** (attempt - 1))
                 print(f"[Tesla API] Attente de {delay} secondes avant retry...")
                 time.sleep(delay)
         else:
-            # Si la boucle se termine sans break (toutes les tentatives ont échoué)
             return None
 
-        # Prépare le document à insérer dans MongoDB avec timestamp, année, version et data brute
-        # Utilise l'heure locale du système (Europe/Paris dans Docker grâce à ENV TZ)
         document = {
-            'timestamp': datetime.now(),  # datetime.now() prend le TZ du système si TZ est défini dans Docker
+            'timestamp': datetime.now(),
             'year': year,
             'version': version,
             'data': data
         }
-        # Insertion du document dans la collection MongoDB
         result = self.collection_m3.insert_one(document)
         return str(result.inserted_id)

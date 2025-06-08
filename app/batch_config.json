@@ -1,0 +1,24 @@
+{
+    "batch_params": [
+        {
+            "year": 2020,
+            "version": "M3RWD"
+        },
+        {
+            "year": 2021,
+            "version": "M3RWD"
+        },
+        {
+            "year": 2022,
+            "version": "M3RWD"
+        },
+        {
+            "year": 2023,
+            "version": "M3RWD"
+        },
+        {
+            "year": 2024,
+            "version": "M3RWD"
+        }
+    ]
+}
