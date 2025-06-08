@@ -12,3 +12,4 @@ apscheduler
 pytz
 flask-smorest>=0.42.0
 numpy>=1.24.0
+flask-cors

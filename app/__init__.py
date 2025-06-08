@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_smorest import Api
+from flask_cors import CORS
+import os
 
 mongo = PyMongo()
 api = Api()
@@ -10,6 +12,16 @@ def create_app(config_class='app.config.Config'):
     
     # Chargement de la configuration
     app.config.from_object(config_class)
+    
+    # Configuration CORS
+    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": [frontend_url],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
     
     # Initialisation des extensions
     mongo.init_app(app)

@@ -32,9 +32,10 @@ services:
       - FLASK_ENV=${FLASK_ENV}
       - SECRET_KEY=${SECRET_KEY}
       - MONGO_URI=${MONGO_URI}
-      - PORT=${PORT}
+      - PORT=${FLASK_PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
     ports:
-      - "${PORT}:${PORT}"
+      - "${FLASK_PORT}:${FLASK_PORT}"
     volumes:
       - .:/app
     depends_on:
@@ -52,13 +53,33 @@ services:
       - FLASK_ENV=${FLASK_ENV}
       - SECRET_KEY=${SECRET_KEY}
       - MONGO_URI=${MONGO_URI}
-      - PORT=${PORT}
+      - PORT=${FLASK_PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
     volumes:
       - .:/app
     depends_on:
       - mongodb
     networks:
       - app-network
+
+  # Service pour l'application React
+  react-app:
+    build:
+      context: ./spa
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./spa:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - flask-app
+    networks:
+      - app-network
+
 
 volumes:
   mongodb_data:
