@@ -7,6 +7,7 @@ class GraphPointDTO:
     timestamp: datetime
     price: float
     text: Optional[str] = None
+    vin: Optional[str] = None  # Ajout du champ VIN
 
 @dataclass
 class MetaDTO:

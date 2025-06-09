@@ -1,0 +1,17 @@
+.chart {
+    width: 100%;
+}
+
+.card-footer {
+
+    &__stats {
+        &__info {
+            font-weight: bold;
+
+            &__value {
+                color: #1976d2;
+                font-size: 2em;
+            }
+        }
+    }
+}

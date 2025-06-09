@@ -28,6 +28,7 @@ class CalculService:
                 'year': 1,
                 'version': 1,
                 'price': '$data.results.Price',
+                'vin': '$data.results.VIN',  # Ajout du champ VIN
                 'results': '$data.results'
             }},
             { '$unwind': '$results' },
