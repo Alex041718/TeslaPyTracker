@@ -16,7 +16,8 @@ class GraphService:
                 GraphPointDTO(
                     timestamp=point['timestamp'],
                     price=point['minPrice'],
-                    text=f"Version: {point.get('version', 'N/A')}"
+                    text=f"Version: {point.get('version', 'N/A')}",
+                    vin=point.get('vin', None)
                 ) for point in points
             ]
 
