@@ -2,6 +2,39 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import type { GraphData } from '../dto/graph.dto';
 import './Chart.scss';
 
+interface TooltipData {
+  price: number;
+  vin?: string;
+  timestamp: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    payload: TooltipData;
+  }>;
+  label?: number;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="custom-tooltip">
+        <p>{`Date: ${new Date(label || 0).toLocaleString()}`}</p>
+        <p>{`Prix: ${data.price.toLocaleString()} €`}</p>
+        <p>{`VIN: ${data.vin || 'N/A'}`}</p>
+        {/* Vous pouvez ajouter d'autres éléments JSX ici, par exemple:
+        <img src="..." alt="..." />
+        <a href="...">Lien</a>
+        <CustomComponent data={...} />
+        */}
+      </div>
+    );
+  }
+  return null;
+};
+
 interface ChartProps {
   graphData: GraphData;
   // color?: string; // Suppression de la duplication
@@ -34,10 +67,7 @@ const Chart = ({ graphData, color = "#8884d8" }: ChartProps) => {
             domain={[minPrice, maxPrice]}
             tickFormatter={(value) => `${value.toLocaleString()} €`}
           />
-          <Tooltip
-            labelFormatter={(value) => new Date(value).toLocaleString()}
-            formatter={(value: number) => [`${value.toLocaleString()} €`, 'Prix']}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
             dataKey="price"

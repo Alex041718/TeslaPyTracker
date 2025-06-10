@@ -36,6 +36,7 @@ class CalculService:
                 '_id': '$timestamp',
                 'minPrice': { '$min': '$results.Price' },
                 'year': { '$first': '$year' },
+                'vin': { '$first': '$results.VIN' },  # Ajout du VIN dans le regroupement
                 'version': { '$first': '$version' }
             }},
             { '$sort': { '_id': 1 } }

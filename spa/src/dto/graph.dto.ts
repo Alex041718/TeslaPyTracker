@@ -2,6 +2,7 @@ export interface GraphPoint {
     timestamp: Date;
     price: number;
     text?: string;
+    vin: string;
 }
 
 export interface Meta {
