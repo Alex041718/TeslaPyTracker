@@ -3,6 +3,7 @@ export interface GraphPoint {
     price: number;
     text?: string;
     vin: string;
+    paint: string; // Couleur de la peinture
 }
 
 export interface Meta {

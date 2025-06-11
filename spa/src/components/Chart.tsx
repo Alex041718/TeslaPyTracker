@@ -5,6 +5,7 @@ import './Chart.scss';
 interface TooltipData {
   price: number;
   vin?: string;
+  paint?: string;  // Ajout de la couleur de peinture
   timestamp: number;
 }
 
@@ -24,6 +25,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         <p>{`Date: ${new Date(label || 0).toLocaleString()}`}</p>
         <p>{`Prix: ${data.price.toLocaleString()} €`}</p>
         <p>{`VIN: ${data.vin || 'N/A'}`}</p>
+        <p>
+          Couleur: <span className={`custom-tooltip__paint custom-tooltip__paint--${(data.paint || 'N/A').toUpperCase()}`}>{data.paint || 'N/A'}</span>
+        </p>
         {/* Vous pouvez ajouter d'autres éléments JSX ici, par exemple:
         <img src="..." alt="..." />
         <a href="...">Lien</a>
