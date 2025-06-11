@@ -1,153 +1,123 @@
 # Tesla Tracker Python
 
-## API Documentation avec Swagger UI
+Application de suivi des prix Tesla Model 3 d'occasion avec visualisation graphique des données.
 
-L'application expose une interface Swagger UI qui permet de :
-- Explorer les endpoints disponibles
-- Tester les requêtes directement depuis l'interface
-- Consulter les schémas de données
-- Comprendre les paramètres acceptés par chaque endpoint
+## Architecture
 
-### Accès à l'Interface Swagger
+Le projet est composé de trois services principaux :
 
-Une fois l'application démarrée avec Docker Compose :
+- **API Backend (Flask)** : Gère les requêtes, le traitement des données et l'accès à la base de données
+- **Frontend (React)** : Interface utilisateur pour la visualisation des données
+- **Batch Scheduler** : Service de collecte automatique des données Tesla
+
+## Technologies
+
+### Backend
+- Python 3.x
+- Flask (API REST)
+- MongoDB (Base de données)
+- Flask-CORS (Gestion des CORS)
+- Flask-PyMongo (Interface MongoDB)
+- Flask-Smorest (Documentation API)
+
+### Frontend
+- React 19
+- TypeScript
+- Vite
+- Recharts (Graphiques)
+- SASS
+- Axios (Requêtes HTTP)
+
+## Installation
+
+### Prérequis
+- Docker
+- Docker Compose
+- Git
+
+### Configuration
+
+1. Clonez le dépôt :
+```bash
+git clone https://github.com/votre-username/TeslaTrackerPython.git
+cd TeslaTrackerPython
+```
+
+2. Créez le fichier `.env` à partir du modèle :
+```bash
+cp .env.example .env
+```
+
+3. Modifiez les variables d'environnement dans `.env` selon vos besoins
+
+### Démarrage
+
+1. Construisez et démarrez les conteneurs :
 ```bash
 docker-compose up -d
 ```
 
-L'interface Swagger UI est accessible à :
+2. Vérifiez que tous les services sont en cours d'exécution :
+```bash
+docker-compose ps
 ```
-http://localhost:${PORT}/api/docs/swagger
+
+## Services
+
+### API Backend (port 5555)
+
+L'API expose une interface Swagger UI accessible à :
 ```
-où ${PORT} est le port défini dans votre fichier .env
+http://localhost:5555/api/docs/swagger
+```
 
-### Endpoints Disponibles
+#### Endpoints Principaux
 
-#### Graphes
 - `GET /api/graphs/min-price` : Évolution du prix minimum des Tesla
   - Paramètres :
     - year (optionnel) : Année à filtrer
     - version (optionnel) : Version Tesla spécifique
-    - points (optionnel, défaut: 25) : Nombre de points souhaités pour le graphe
+    - points (optionnel, défaut: 25) : Nombre de points pour le graphe
 
-La réponse inclut :
-- Métadonnées (nombre total de points, points normalisés)
-- Points du graphe (timestamp, prix, description)
-- Liens de navigation
+### Frontend (port 5173)
 
-## Configuration du Service Systemd sur Raspberry Pi
-
-Pour assurer que l'application continue de fonctionner après la déconnexion SSH et redémarre automatiquement après un reboot, suivez ces étapes pour configurer un service systemd.
-
-### Prérequis
-
-- Docker et Docker Compose installés sur le Raspberry Pi
-- Droits sudo sur le Raspberry Pi
-- Le projet cloné dans un répertoire sur le Raspberry Pi
-
-### Étapes d'Installation
-
-1. **Créer le fichier service systemd**
-
-```bash
-sudo nano /etc/systemd/system/tesla-tracker.service
+Interface utilisateur accessible à :
+```
+http://localhost:5173
 ```
 
-2. **Copier la configuration suivante** (ajustez le chemin et l'utilisateur selon votre configuration)
+### Batch Scheduler
 
-```ini
-[Unit]
-Description=Tesla Tracker Docker Compose
-Requires=docker.service
-After=docker.service network.target
+Service automatisé qui :
+- Collecte les données Tesla à intervalles réguliers
+- Stocke les informations dans MongoDB
+- Configuration des tâches dans `app/batch_config.json`
 
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-User=pi
-Group=docker
-WorkingDirectory=/home/pi/TeslaPyTracker
-ExecStart=/usr/bin/docker compose up --detach --build
-ExecStop=/usr/bin/docker compose down
+## Structure du Projet
 
-[Install]
-WantedBy=multi-user.target
+```
+.
+├── app/                    # Backend Flask
+│   ├── controllers/        # Contrôleurs API
+│   ├── services/          # Logique métier
+│   ├── schemas/          # Schémas de validation
+│   └── dto/              # Objets de transfert de données
+├── spa/                   # Frontend React
+│   ├── src/              # Code source React
+│   │   ├── components/   # Composants React
+│   │   ├── api/         # Services API
+│   │   └── dto/         # Types TypeScript
+└── docker-compose.yml    # Configuration Docker
 ```
 
-3. **Activer et démarrer le service**
+## Déploiement sur Raspberry Pi
 
-```bash
-# Recharger la configuration systemd
-sudo systemctl daemon-reload
+Pour les instructions de déploiement sur Raspberry Pi, consultez [RASPBERRY_PI.md](RASPBERRY_PI.md).
 
-# Activer le service pour qu'il démarre au boot
-sudo systemctl enable tesla-tracker.service
+## Contribution
 
-# Démarrer le service
-sudo systemctl start tesla-tracker.service
-```
-
-### Commandes Utiles
-
-**Vérifier l'état du service :**
-```bash
-sudo systemctl status tesla-tracker.service
-```
-
-**Consulter les logs :**
-```bash
-# Voir les logs en temps réel
-journalctl -u tesla-tracker.service -f
-
-# Voir les dernières entrées
-journalctl -u tesla-tracker.service -n 50
-```
-
-**Redémarrer le service :**
-```bash
-sudo systemctl restart tesla-tracker.service
-```
-
-**Arrêter le service :**
-```bash
-sudo systemctl stop tesla-tracker.service
-
-
-git pull && sudo systemctl restart tesla-tracker.service
-```
-
-### Résolution des Problèmes Courants
-
-1. **Le service ne démarre pas**
-   - Vérifiez les logs : `journalctl -u tesla-tracker.service -n 50`
-   - Vérifiez que les chemins dans le fichier service sont corrects
-   - Assurez-vous que l'utilisateur a les droits nécessaires
-   - Si vous obtenez une erreur USER (status=217), exécutez :
-     ```bash
-     sudo usermod -aG docker pi
-     sudo chown -R pi:pi /home/pi/TeslaPyTracker
-     ```
-
-2. **Erreur de permission Docker**
-   - Assurez-vous que votre utilisateur fait partie du groupe docker :
-     ```bash
-     sudo usermod -aG docker votre_utilisateur
-     ```
-   - Déconnectez-vous et reconnectez-vous pour que les changements prennent effet
-
-3. **Les conteneurs ne redémarrent pas automatiquement**
-   - Vérifiez que `restart: always` est configuré dans docker-compose.yml pour chaque service
-   - Assurez-vous que le service systemd a `Restart=always` dans sa configuration
-
-### Notes Importantes
-
-- Le service redémarrera automatiquement en cas d'erreur après 10 secondes (configurable via `RestartSec`)
-- Les logs sont conservés dans journald et peuvent être consultés même après un redémarrage
-- Le service démarre automatiquement au boot du Raspberry Pi
-- La connexion SSH peut être fermée sans affecter le fonctionnement des conteneurs
-
-
-Mode rootless Docker : si vous utilisez Docker en mode non-root (rootless), le démon Docker s’arrête par défaut quand la session utilisateur se termine. Dans ce cas, il faut activer le linger pour que le service continue de tourner après déconnexion. Exécutez par exemple :
-```bash
-sudo loginctl enable-linger pi
-```
+1. Fork le projet
+2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/ma-fonctionnalite`)
+3. Committez vos changements (`git commit -am 'Ajout de ma fonctionnalité'`)
+4. Push vers la branche (`git push origin feature/ma-fonctionnalite`)
+5. Créez une Pull Request
