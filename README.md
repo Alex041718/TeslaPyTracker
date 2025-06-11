@@ -111,6 +111,9 @@ sudo systemctl restart tesla-tracker.service
 **Arrêter le service :**
 ```bash
 sudo systemctl stop tesla-tracker.service
+
+
+git pull && sudo systemctl restart tesla-tracker.service
 ```
 
 ### Résolution des Problèmes Courants
