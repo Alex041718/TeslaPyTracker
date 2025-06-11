@@ -28,7 +28,6 @@ class CalculService:
                 'year': 1,
                 'version': 1,
                 'price': '$data.results.Price',
-                'vin': '$data.results.VIN',  # Ajout du champ VIN
                 'results': '$data.results'
             }},
             { '$unwind': '$results' },
@@ -37,7 +36,8 @@ class CalculService:
                 'minPrice': { '$min': '$results.Price' },
                 'year': { '$first': '$year' },
                 'vin': { '$first': '$results.VIN' },  # Ajout du VIN dans le regroupement
-                'version': { '$first': '$version' }
+                'version': { '$first': '$version' },
+                'paint': { '$first': { '$arrayElemAt': ['$results.PAINT', 0] } }  # Extraction de la première couleur du tableau
             }},
             { '$sort': { '_id': 1 } }
         ]

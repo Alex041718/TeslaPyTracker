@@ -5,6 +5,8 @@ class GraphPointSchema(Schema):
     price = fields.Float(required=True, description="Prix en euros")
     text = fields.String(description="Texte descriptif du point")
     vin = fields.String(description="VIN du véhicule (optionnel)")
+    paint = fields.String(description="Couleur de la peinture (optionnel)")
+    
 class MetaSchema(Schema):
     total_points = fields.Integer(required=True, description="Nombre total de points avant normalisation")
     normalized_points = fields.Integer(required=True, description="Nombre de points après normalisation")

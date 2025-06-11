@@ -8,6 +8,7 @@ class GraphPointDTO:
     price: float
     text: Optional[str] = None
     vin: Optional[str] = None  # Ajout du champ VIN
+    paint: Optional[str] = None
 
 @dataclass
 class MetaDTO:

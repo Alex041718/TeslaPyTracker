@@ -17,7 +17,8 @@ class GraphService:
                     timestamp=point['timestamp'],
                     price=point['minPrice'],
                     text=f"Version: {point.get('version', 'N/A')}",
-                    vin=point.get('vin', None)  # Ajout du VIN
+                    vin=point.get('vin', None),  # Ajout du VIN
+                    paint=point.get('paint', None)  # Ajout du champ Paint
                 ) for point in points
             ]
 
@@ -32,7 +33,8 @@ class GraphService:
                     timestamp=point['timestamp'],
                     price=point['minPrice'],
                     text=f"Version: {point.get('version', 'N/A')}",
-                    vin=point.get('vin', None)  # Ajout du VIN
+                    vin=point.get('vin', None),  # Ajout du VIN
+                    paint=point.get('paint', None)  # Ajout du champ Paint # Ajout du champ Paint
                 )
             )
         
