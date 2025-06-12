@@ -37,7 +37,8 @@ class CalculService:
                 'year': { '$first': '$year' },
                 'vin': { '$first': '$results.VIN' },  # Ajout du VIN dans le regroupement
                 'version': { '$first': '$version' },
-                'paint': { '$first': { '$arrayElemAt': ['$results.PAINT', 0] } }  # Extraction de la première couleur du tableau
+                'paint': { '$first': { '$arrayElemAt': ['$results.PAINT', 0] } },  # Extraction de la première couleur du tableau
+                'odometer': { '$first': '$results.Odometer' }  # Ajout du champ Odometer
             }},
             { '$sort': { '_id': 1 } }
         ]

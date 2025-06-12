@@ -18,7 +18,8 @@ class GraphService:
                     price=point['minPrice'],
                     text=f"Version: {point.get('version', 'N/A')}",
                     vin=point.get('vin', None),  # Ajout du VIN
-                    paint=point.get('paint', None)  # Ajout du champ Paint
+                    paint=point.get('paint', None),  # Ajout du champ Paint
+                    odometer=point.get('odometer', None)  # Ajout du champ Odometer
                 ) for point in points
             ]
 
@@ -34,7 +35,8 @@ class GraphService:
                     price=point['minPrice'],
                     text=f"Version: {point.get('version', 'N/A')}",
                     vin=point.get('vin', None),  # Ajout du VIN
-                    paint=point.get('paint', None)  # Ajout du champ Paint # Ajout du champ Paint
+                    paint=point.get('paint', None),  # Ajout du champ Paint
+                    odometer=point.get('odometer', None)  # Ajout du champ Odometer
                 )
             )
         

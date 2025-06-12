@@ -9,6 +9,7 @@ class GraphPointDTO:
     text: Optional[str] = None
     vin: Optional[str] = None  # Ajout du champ VIN
     paint: Optional[str] = None
+    odometer: Optional[int] = None  # Ajout du champ Odometer
 
 @dataclass
 class MetaDTO:

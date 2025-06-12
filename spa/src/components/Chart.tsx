@@ -15,6 +15,7 @@ interface CustomTooltipProps {
     payload: TooltipData;
   }>;
   label?: number;
+  data?: TooltipData[];
 }
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
