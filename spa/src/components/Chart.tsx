@@ -7,6 +7,7 @@ interface TooltipData {
   vin?: string;
   paint?: string;  // Ajout de la couleur de peinture
   timestamp: number;
+  odometer?: number; // Kilométrage
 }
 
 interface CustomTooltipProps {
@@ -29,6 +30,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         <p>
           Couleur: <span className={`custom-tooltip__paint custom-tooltip__paint--${(data.paint || 'N/A').toUpperCase()}`}>{data.paint || 'N/A'}</span>
         </p>
+        <p>{`Kilométrage: ${data.odometer ? data.odometer.toLocaleString() + ' km' : 'N/A'}`}</p>
         {/* Vous pouvez ajouter d'autres éléments JSX ici, par exemple:
         <img src="..." alt="..." />
         <a href="...">Lien</a>

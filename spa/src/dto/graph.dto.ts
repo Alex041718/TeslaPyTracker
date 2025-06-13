@@ -4,6 +4,7 @@ export interface GraphPoint {
     text?: string;
     vin: string;
     paint: string; // Couleur de la peinture
+    odometer: number; // Kilométrage
 }
 
 export interface Meta {
