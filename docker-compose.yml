@@ -77,7 +77,6 @@ services:
       - NODE_ENV=development
       - HOST=${HOST}
       - FLASK_PORT=${FLASK_PORT}
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     depends_on:
       - flask-app
     networks:
