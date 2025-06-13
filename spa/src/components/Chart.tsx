@@ -1,6 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { GraphData } from '../dto/graph.dto';
-import './Chart.scss';
+import './chart.scss';
 
 interface TooltipData {
   price: number;
