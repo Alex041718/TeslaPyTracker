@@ -33,7 +33,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - MONGO_URI=${MONGO_URI}
       - PORT=${FLASK_PORT}
-      - FRONTEND_URL=${FRONTEND_URL}
+      - FRONTEND_URL=http://${HOST}:${FLASK_PORT}
     ports:
       - "${FLASK_PORT}:${FLASK_PORT}"
     volumes:
