@@ -3,15 +3,16 @@ from app import mongo
 
 class CalculService:
     @staticmethod
-    def get_min_price_per_capture(year=None, version=None):
+    def get_min_price_per_capture(year=None, version=None, paint=None):
         """
         Retourne le prix le plus bas pour chaque capture temporelle (timestamp),
-        avec possibilité de filtrer par année et version.
+        avec possibilité de filtrer par année, version et couleur de peinture.
         """
         # Utilise un pipeline optimisé :
         # - $match en premier (indexable)
         # - $project pour ne garder que les champs utiles
         # - $unwind pour déplier les résultats
+        # - $match pour filtrer par couleur si spécifiée
         # - $group pour le min
         # - $sort à la fin
         pipeline = []
@@ -22,6 +23,7 @@ class CalculService:
             if version is not None:
                 match['version'] = version
             pipeline.append({'$match': match})
+        
         pipeline += [
             { '$project': {
                 'timestamp': 1,
@@ -30,7 +32,18 @@ class CalculService:
                 'price': '$data.results.Price',
                 'results': '$data.results'
             }},
-            { '$unwind': '$results' },
+            { '$unwind': '$results' }
+        ]
+        
+        # Ajout du filtre par couleur après l'unwind si spécifié
+        if paint is not None:
+            pipeline.append({
+                '$match': {
+                    'results.PAINT.0': paint
+                }
+            })
+        
+        pipeline += [
             { '$group': {
                 '_id': '$timestamp',
                 'minPrice': { '$min': '$results.Price' },

@@ -27,4 +27,5 @@ class GraphDataSchema(Schema):
 class GraphQueryArgsSchema(Schema):
     year = fields.Integer(description="Année à filtrer")
     version = fields.String(description="Version Tesla à filtrer")
+    paint = fields.String(description="Couleur de peinture à filtrer")
     points = fields.Integer(description="Nombre de points souhaités", load_default=25)

@@ -91,7 +91,7 @@ const Chart = ({ graphData, color = "#8884d8" }: ChartProps) => {
             Version: {graphData.meta.version}
           </div>
           <div className="card-footer__stats__info">
-            <span className='card-footer__stats__info__value'>{graphData.data[graphData.data.length -1].price} €</span>
+            <span className='card-footer__stats__info__value'>{graphData.data[graphData.data.length -1]?.price || 0} €</span>
           </div>
         </div>
       </div>

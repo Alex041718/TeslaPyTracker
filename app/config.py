@@ -2,7 +2,7 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-very-secret'
-    MONGO_URI = 'mongodb://flasktesla:alexPass@mongodb:27017/flaskapp'
+    MONGO_URI = 'mongodb://flasktesla:alexPass@rpi40:27017/flaskapp' #'mongodb://flasktesla:alexPass@mongodb:27017/flaskapp'
     DEBUG = True
     
     # Configuration Flask-Smorest

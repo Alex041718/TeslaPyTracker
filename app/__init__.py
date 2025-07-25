@@ -32,5 +32,7 @@ def create_app(config_class='app.config.Config'):
     app.register_blueprint(tesla_history_bp)
     from app.controllers.graph_controller import graph_bp
     api.register_blueprint(graph_bp)
+    from app.controllers.sales_controller import sales_bp
+    api.register_blueprint(sales_bp)
     
     return app

@@ -5,15 +5,16 @@ import type { GraphData } from '../dto/graph.dto';
  * Paramètres requis pour la requête du graphique des prix minimum
  */
 export interface GraphQueryParams {
-    year: number;      // Année à filtrer (obligatoire)
+    year?: number;     // Année à filtrer (optionnel - si non fourni, agrège toutes les années)
     version: string;   // Version Tesla à filtrer (obligatoire)
+    paint?: string;    // Couleur de peinture à filtrer (optionnel)
     points: number;    // Nombre de points souhaités (obligatoire)
 }
 
 export const graphService = {
     /**
      * Récupère l'évolution du prix minimum des Tesla
-     * @param params Paramètres de filtrage obligatoires (année, version, nombre de points)
+     * @param params Paramètres de filtrage (version et points obligatoires, année optionnelle)
      * @returns Promise<GraphData> Les données du graphique
      * @example
      * const data = await graphService.getMinPriceEvolution({
@@ -24,17 +25,29 @@ export const graphService = {
      */
     getMinPriceEvolution: async (params: GraphQueryParams): Promise<GraphData> => {
         // Vérification des paramètres obligatoires
-        if (!params.year || !params.version || !params.points) {
-            throw new Error('Les paramètres year, version et points sont obligatoires');
+        if (!params.version || !params.points) {
+            throw new Error('Les paramètres version et points sont obligatoires');
+        }
+
+        // Construction des paramètres de requête
+        const queryParams: Record<string, string | number> = {
+            version: params.version,
+            points: params.points
+        };
+
+        // Ajout du paramètre year s'il est spécifié
+        if (params.year) {
+            queryParams.year = params.year;
+        }
+
+        // Ajout du paramètre paint s'il est spécifié
+        if (params.paint) {
+            queryParams.paint = params.paint;
         }
 
         // Construction de l'URL avec les paramètres de requête
         const { data } = await apiClient.get<GraphData>('/api/graphs/min-price', {
-            params: {
-                year: params.year,
-                version: params.version,
-                points: params.points
-            }
+            params: queryParams
         });
         
         // Conversion des timestamps en objets Date

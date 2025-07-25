@@ -50,29 +50,40 @@ const ChartContainer = ({ params, color }: { params: GraphQueryParams, color?:st
 };
 
 interface MinPriceChartProps {
-  initialYear: number;
+  initialYear?: number;
   initialVersion?: string;
+  initialPaint?: string;
   initialPoints?: number;
   color?: string; // Couleur personnalisable
 }
 
-const MinPriceChart = ({color,initialYear,initialVersion,initialPoints}:MinPriceChartProps) => {
+const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoints}:MinPriceChartProps) => {
   const [formData, setFormData] = useState<GraphQueryParams>({
-    year: initialYear ??2023,
+    year: initialYear,
     version: initialVersion ?? 'M3RWD',
+    paint: initialPaint,
     points: initialPoints ?? 100,
   });
 
   const handleInputChange = (field: keyof GraphQueryParams) => (e: ChangeEvent<HTMLInputElement>) => {
-    const value = field === 'version' ? e.target.value : parseInt(e.target.value);
+    let value: string | number | undefined;
+    
+    if (field === 'version' || field === 'paint') {
+      value = e.target.value || undefined;
+    } else if (field === 'year') {
+      value = e.target.value ? parseInt(e.target.value) : undefined;
+    } else {
+      value = parseInt(e.target.value);
+    }
+    
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
     <Card className='min-price-chart'>
       <CardHeader
-        title= {`Tesla - Prix minimum ${formData.year}`}
-        subheader={`Visualisez l'évolution des prix minimum pour ${formData.version} `}
+        title={`Tesla - Prix minimum ${formData.year ? formData.year : 'toutes années'}`}
+        subheader={`Visualisez l'évolution des prix minimum pour ${formData.version} ${formData.year ? `en ${formData.year}` : 'sur toutes les années'}`}
         sx={{
           borderBottom: '1px solid #e0e0e0',
           '& .MuiCardHeader-title': {
@@ -90,10 +101,12 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPoints}:MinPrice
           <TextField
             label="Année"
             type="number"
-            value={formData.year}
+            value={formData.year || ''}
             onChange={handleInputChange('year')}
+            placeholder="Toutes années"
             size="small"
             sx={{ maxWidth: '100px' }}
+            helperText="Vide = toutes années"
           />
           
           <TextField
@@ -102,6 +115,15 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPoints}:MinPrice
             onChange={handleInputChange('version')}
             size="small"
             sx={{ maxWidth: '100px' }}
+          />
+          
+          <TextField
+            label="Couleur"
+            value={formData.paint || ''}
+            onChange={handleInputChange('paint')}
+            placeholder="Ex: WHITE, BLACK..."
+            size="small"
+            sx={{ maxWidth: '120px' }}
           />
           
           <TextField

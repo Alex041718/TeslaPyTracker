@@ -1,6 +1,7 @@
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import MinPriceChart from './components/MinPriceChart';
+import SaleBarChart from './components/SaleBarChart';
 import './App.scss';
 
 const theme = createTheme();
@@ -18,6 +19,8 @@ const App = () => {
           <MinPriceChart color='#B2DBF7' initialYear={2022} />
           <MinPriceChart color='#2192D9' initialYear={2021} />
           <MinPriceChart color='#BEE65F' initialYear={2020} />
+          <MinPriceChart color="#FF6F61" initialPaint='RED' />
+          <SaleBarChart params={{ version: 'M3RWD' }} color="#FF6F61" />
         </div>
       </div>
     </ThemeProvider>

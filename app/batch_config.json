@@ -19,6 +19,66 @@
         {
             "year": 2024,
             "version": "M3RWD"
+        },
+        {
+            "year": 2020,
+            "version": "LRRWD"
+        },
+        {
+            "year": 2021,
+            "version": "LRRWD"
+        },
+        {
+            "year": 2022,
+            "version": "LRRWD"
+        },
+        {
+            "year": 2023,
+            "version": "LRRWD"
+        },
+        {
+            "year": 2024,
+            "version": "LRRWD"
+        },
+        {
+            "year": 2020,
+            "version": "LRAWD"
+        },
+        {
+            "year": 2021,
+            "version": "LRAWD"
+        },
+        {
+            "year": 2022,
+            "version": "LRAWD"
+        },
+        {
+            "year": 2023,
+            "version": "LRAWD"
+        },
+        {
+            "year": 2024,
+            "version": "LRAWD"
+        },
+        {
+            "year": 2020,
+            "version": "PAWD"
+        },
+        {
+            "year": 2021,
+            "version": "PAWD"
+        },
+        {
+            "year": 2022,
+            "version": "PAWD"
+        },
+        {
+            "year": 2023,
+            "version": "PAWD"
+        },
+        {
+            "year": 2024,
+            "version": "PAWD"
         }
     ]
 }

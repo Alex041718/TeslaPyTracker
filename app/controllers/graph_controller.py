@@ -25,9 +25,10 @@ class MinPriceGraph(MethodView):
         try:
             year = args.get('year')
             version = args.get('version')
+            paint = args.get('paint')
             points = args.get('points', 25)
             
-            graph_data = GraphService.get_min_price_evolution(year, version, points)
+            graph_data = GraphService.get_min_price_evolution(year, version, paint, points)
             
             # Conversion des datetime en timestamps pour la sérialisation JSON
             for point in graph_data.data:

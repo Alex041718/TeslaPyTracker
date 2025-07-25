@@ -43,14 +43,15 @@ class GraphService:
         return normalized_points
 
     @staticmethod
-    def get_min_price_evolution(year: Optional[int] = None, 
+    def get_min_price_evolution(year: Optional[int] = None,
                               version: Optional[str] = None,
+                              paint: Optional[str] = None,
                               points: int = 25) -> GraphDataDTO:
         """
         Génère les données pour le graphe d'évolution des prix minimums.
         """
         # Récupération des données brutes
-        raw_data = CalculService.get_min_price_per_capture(year, version)
+        raw_data = CalculService.get_min_price_per_capture(year, version, paint)
         
         # Normalisation des points
         normalized_points = GraphService.normalize_points(raw_data, points)
@@ -65,6 +66,6 @@ class GraphService:
             ),
             data=normalized_points,
             links=LinksDTO(
-                self=f"/api/graphs/min-price?year={year if year else ''}&version={version if version else ''}"
+                self=f"/api/graphs/min-price?year={year if year else ''}&version={version if version else ''}&paint={paint if paint else ''}"
             )
         )
