@@ -81,6 +81,8 @@ const Chart = ({ graphData, color = "#8884d8" }: ChartProps) => {
             stroke={color}
             fill={color}
             fillOpacity={0.3}
+            connectNulls={true}
+            strokeWidth={2}
           />
         </AreaChart>
       </ResponsiveContainer>
