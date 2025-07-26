@@ -1,4 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import { graphService, type GraphQueryParams } from '../api/graphService';
 import type { GraphData } from '../dto/graph.dto';
 import Chart from './Chart';
@@ -11,6 +12,10 @@ import {
   Stack,
   Alert,
   AlertTitle,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 
 const ChartContainer = ({ params, color }: { params: GraphQueryParams, color?:string }) => {
@@ -65,19 +70,20 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
     points: initialPoints ?? 100,
   });
 
-  const handleInputChange = (field: keyof GraphQueryParams) => (e: ChangeEvent<HTMLInputElement>) => {
-    let value: string | number | undefined;
-    
-    if (field === 'version' || field === 'paint') {
-      value = e.target.value || undefined;
-    } else if (field === 'year') {
-      value = e.target.value ? parseInt(e.target.value) : undefined;
-    } else {
-      value = parseInt(e.target.value);
-    }
-    
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const handleInputChange = (field: keyof GraphQueryParams) =>
+    (e: SelectChangeEvent<string | number> | ChangeEvent<HTMLInputElement>) => {
+      let value: string | number | undefined;
+      
+      if (field === 'version' || field === 'paint') {
+        value = e.target.value || undefined;
+      } else if (field === 'year') {
+        value = e.target.value ? Number(e.target.value) : undefined;
+      } else {
+        value = Number(e.target.value);
+      }
+      
+      setFormData(prev => ({ ...prev, [field]: value }));
+    };
 
   return (
     <Card className='min-price-chart'>
@@ -98,29 +104,42 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
           p: 2,
           borderRadius: 1
         }}>
-          <TextField
-            label="Année"
-            type="number"
-            value={formData.year || ''}
-            onChange={handleInputChange('year')}
-            placeholder="Toutes années"
-            size="small"
-            sx={{ maxWidth: '100px' }}
-            helperText="Vide = toutes années"
-          />
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Année</InputLabel>
+            <Select
+              value={formData.year || ''}
+              label="Année"
+              onChange={handleInputChange('year')}
+              displayEmpty
+            >
+              <MenuItem value="">Toutes années</MenuItem>
+              {[2020, 2021, 2022, 2023, 2024].map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           
-          <TextField
-            label="Version"
-            value={formData.version}
-            onChange={handleInputChange('version')}
-            size="small"
-            sx={{ maxWidth: '100px' }}
-          />
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Version</InputLabel>
+            <Select
+              value={formData.version}
+              label="Version"
+              onChange={handleInputChange('version')}
+            >
+              {['M3RWD', 'LRRWD', 'LRAWD', 'PAWD'].map((version) => (
+                <MenuItem key={version} value={version}>
+                  {version}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           
           <TextField
             label="Couleur"
             value={formData.paint || ''}
-            onChange={handleInputChange('paint')}
+            onChange={handleInputChange('paint') as (e: ChangeEvent<HTMLInputElement>) => void}
             placeholder="Ex: WHITE, BLACK..."
             size="small"
             sx={{ maxWidth: '120px' }}
@@ -130,7 +149,7 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
             label="Points"
             type="number"
             value={formData.points}
-            onChange={handleInputChange('points')}
+            onChange={handleInputChange('points') as (e: ChangeEvent<HTMLInputElement>) => void}
             inputProps={{ min: "1" }}
             size="small"
             sx={{ maxWidth: '100px' }}
