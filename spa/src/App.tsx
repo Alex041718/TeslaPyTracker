@@ -20,7 +20,8 @@ const App = () => {
           <MinPriceChart color='#2192D9' initialYear={2021} />
           <MinPriceChart color='#BEE65F' initialYear={2020} />
           <MinPriceChart color="#FF6F61" initialPaint='RED' />
-          <SaleBarChart params={{ version: 'M3RWD' }} color="#FF6F61" />
+          <MinPriceChart color="#131212ff" initialPaint='BLACK' />
+          <SaleBarChart params={{ version: 'M3RWD' }} color="#61dfffff" />
         </div>
       </div>
     </ThemeProvider>
