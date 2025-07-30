@@ -4,6 +4,99 @@
     max-width: 100%;
     margin: 15px;
     border: 1px solid #e0e0e0;
-    border-radius: 2px;
+    border-radius: 8px;
     padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    
+    /* Titre */
+    h2 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        
+        @media (max-width: 768px) {
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 480px) {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+    }
+    
+    /* Media queries pour différentes tailles d'écran */
+    @media (max-width: 1400px) {
+        width: 46%;
+    }
+    
+    @media (max-width: 1200px) {
+        width: 45%;
+    }
+    
+    @media (max-width: 992px) {
+        width: 95%;
+        margin: 15px auto;
+    }
+    
+    @media (max-width: 768px) {
+        width: 100%;
+        margin: 12px 0;
+        padding: 12px;
+    }
+    
+    @media (max-width: 480px) {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 6px;
+    }
+    
+    /* Conteneur du graphique */
+    &__container {
+        width: 100%;
+        
+        @media (max-width: 768px) {
+            height: 250px;
+        }
+        
+        @media (max-width: 480px) {
+            height: 220px;
+        }
+    }
+    
+    /* Section du total des ventes */
+    &__total {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px dashed #e0e0e0;
+        text-align: right;
+        
+        p {
+            margin: 0;
+            font-size: 1rem;
+            
+            strong {
+                color: #1976d2;
+                font-size: 1.2em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            margin-top: 12px;
+            
+            p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            margin-top: 10px;
+            padding-top: 8px;
+            
+            p {
+                font-size: 0.85rem;
+            }
+        }
+    }
 }

@@ -3,7 +3,31 @@
     max-width: 100%;
     margin: 15px;
     border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
     
+    /* Media queries pour différentes tailles d'écran */
+    @media (max-width: 1400px) {
+        width: 46%;
+    }
+    
+    @media (max-width: 1200px) {
+        width: 45%;
+    }
+    
+    @media (max-width: 992px) {
+        width: 95%;
+        margin: 15px auto;
+    }
+    
+    @media (max-width: 768px) {
+        width: 100%;
+        margin: 12px 0;
+    }
+    
+    @media (max-width: 480px) {
+        margin: 10px 0;
+        border-radius: 6px;
+    }
 }

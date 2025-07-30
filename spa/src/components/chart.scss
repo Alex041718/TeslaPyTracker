@@ -1,5 +1,17 @@
 .chart {
     width: 100%;
+    transition: all 0.3s ease;
+    
+    /* Styles responsifs pour le graphique */
+    @media (max-width: 992px) {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Ajustements pour petits écrans */
+    @media (max-width: 480px) {
+        margin-top: 10px;
+    }
 }
 
 .custom-tooltip {

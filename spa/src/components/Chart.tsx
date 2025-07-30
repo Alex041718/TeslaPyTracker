@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { GraphData } from '../dto/graph.dto';
 import './chart.scss';
@@ -55,24 +56,30 @@ const Chart = ({ graphData, color = "#8884d8" }: ChartProps) => {
   const maxPrice = Math.max(...prices) + 1000;
   return (
     <div className="chart">
-      <ResponsiveContainer  height={200}>
+      <ResponsiveContainer width="100%" height={window.innerWidth < 768 ? 180 : window.innerWidth < 992 ? 200 : 220}>
         <AreaChart
           data={graphData.data}
           margin={{
             top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
+            right: window.innerWidth < 480 ? 10 : 30,
+            left: window.innerWidth < 480 ? 0 : 5,
+            bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
+          <CartesianGrid strokeDasharray="3 3" opacity={0.7} />
+          <XAxis
             dataKey="timestamp"
             tickFormatter={(value) => new Date(value).toLocaleDateString()}
+            tick={{ fontSize: window.innerWidth < 480 ? 10 : 12 }}
+            tickMargin={window.innerWidth < 480 ? 5 : 10}
+            tickCount={window.innerWidth < 768 ? 4 : 6}
           />
           <YAxis
             domain={[minPrice, maxPrice]}
             tickFormatter={(value) => `${value.toLocaleString()} €`}
+            tick={{ fontSize: window.innerWidth < 480 ? 10 : 12 }}
+            tickCount={window.innerWidth < 480 ? 4 : 5}
+            width={window.innerWidth < 480 ? 45 : 60}
           />
           <Tooltip content={<CustomTooltip />} />
           <Area
@@ -83,6 +90,7 @@ const Chart = ({ graphData, color = "#8884d8" }: ChartProps) => {
             fillOpacity={0.3}
             connectNulls={true}
             strokeWidth={2}
+            animationDuration={750}
           />
         </AreaChart>
       </ResponsiveContainer>

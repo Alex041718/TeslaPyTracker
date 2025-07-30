@@ -92,19 +92,35 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
         subheader={`Visualisez l'évolution des prix minimum pour ${formData.version} ${formData.year ? `en ${formData.year}` : 'sur toutes les années'}`}
         sx={{
           borderBottom: '1px solid #e0e0e0',
+          padding: { xs: '16px 16px', sm: '16px 24px' },
           '& .MuiCardHeader-title': {
-            fontSize: '1.2rem',
+            fontSize: { xs: '1rem', sm: '1.2rem' },
             fontWeight: 600
+          },
+          '& .MuiCardHeader-subheader': {
+            fontSize: { xs: '0.8rem', sm: '0.9rem' }
           }
         }}
       />
-      <CardContent sx={{ p: 3 }}>
-        <Stack direction="row" spacing={2} sx={{
-          mb: 3,
-          p: 2,
-          borderRadius: 1
-        }}>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 1.5, sm: 2 }}
+          sx={{
+            mb: 3,
+            p: { xs: 1.5, sm: 2 },
+            borderRadius: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            flexWrap: { sm: 'wrap' }
+          }}
+        >
+          <FormControl
+            size="small"
+            sx={{
+              minWidth: { xs: '100%', sm: 120 },
+              flex: { xs: '1 1 100%', sm: '0 1 auto' }
+            }}
+          >
             <InputLabel>Année</InputLabel>
             <Select
               value={formData.year || ''}
@@ -121,7 +137,13 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
             </Select>
           </FormControl>
           
-          <FormControl size="small" sx={{ minWidth: 120 }}>
+          <FormControl
+            size="small"
+            sx={{
+              minWidth: { xs: '100%', sm: 120 },
+              flex: { xs: '1 1 100%', sm: '0 1 auto' }
+            }}
+          >
             <InputLabel>Version</InputLabel>
             <Select
               value={formData.version}
@@ -142,7 +164,10 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
             onChange={handleInputChange('paint') as (e: ChangeEvent<HTMLInputElement>) => void}
             placeholder="Ex: WHITE, BLACK..."
             size="small"
-            sx={{ maxWidth: '120px' }}
+            sx={{
+              width: { xs: '100%', sm: '120px' },
+              flex: { xs: '1 1 100%', sm: '0 1 auto' }
+            }}
           />
           
           <TextField
@@ -152,7 +177,10 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
             onChange={handleInputChange('points') as (e: ChangeEvent<HTMLInputElement>) => void}
             inputProps={{ min: "1" }}
             size="small"
-            sx={{ maxWidth: '100px' }}
+            sx={{
+              width: { xs: '100%', sm: '100px' },
+              flex: { xs: '1 1 100%', sm: '0 1 auto' }
+            }}
           />
         </Stack>
 
