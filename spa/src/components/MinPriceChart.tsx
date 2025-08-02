@@ -16,6 +16,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Box,
 } from '@mui/material';
 
 const ChartContainer = ({ params, color }: { params: GraphQueryParams, color?:string }) => {
@@ -68,13 +69,14 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
     version: initialVersion ?? 'M3RWD',
     paint: initialPaint,
     points: initialPoints ?? 100,
+    timeRange: 'all',
   });
 
   const handleInputChange = (field: keyof GraphQueryParams) =>
     (e: SelectChangeEvent<string | number> | ChangeEvent<HTMLInputElement>) => {
       let value: string | number | undefined;
       
-      if (field === 'version' || field === 'paint') {
+      if (field === 'version' || field === 'paint' || field === 'timeRange') {
         value = e.target.value || undefined;
       } else if (field === 'year') {
         value = e.target.value ? Number(e.target.value) : undefined;
@@ -85,11 +87,38 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
       setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+  // Fonction pour générer un sous-titre dynamique
+  const getSubheader = () => {
+    let subheader = `Visualisez l'évolution des prix minimum pour ${formData.version}`;
+    
+    if (formData.year) {
+      subheader += ` en ${formData.year}`;
+    } else {
+      subheader += ' sur toutes les années';
+    }
+    
+    if (formData.timeRange && formData.timeRange !== 'all') {
+      let period = '';
+      switch(formData.timeRange) {
+        case '1y': period = 'dernière année'; break;
+        case '6m': period = 'derniers 6 mois'; break;
+        case '3m': period = 'derniers 3 mois'; break;
+        case '1m': period = 'dernier mois'; break;
+        case '1w': period = 'dernière semaine'; break;
+      }
+      if (period) {
+        subheader += ` (${period})`;
+      }
+    }
+    
+    return subheader;
+  };
+
   return (
     <Card className='min-price-chart'>
       <CardHeader
         title={`Tesla - Prix minimum ${formData.year ? formData.year : 'toutes années'}`}
-        subheader={`Visualisez l'évolution des prix minimum pour ${formData.version} ${formData.year ? `en ${formData.year}` : 'sur toutes les années'}`}
+        subheader={getSubheader()}
         sx={{
           borderBottom: '1px solid #e0e0e0',
           padding: { xs: '16px 16px', sm: '16px 24px' },
@@ -103,90 +132,129 @@ const MinPriceChart = ({color,initialYear,initialVersion,initialPaint,initialPoi
         }}
       />
       <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={{ xs: 1.5, sm: 2 }}
-          sx={{
-            mb: 3,
-            p: { xs: 1.5, sm: 2 },
-            borderRadius: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.02)',
-            flexWrap: { sm: 'wrap' }
-          }}
-        >
-          <FormControl
-            size="small"
-            sx={{
-              minWidth: { xs: '100%', sm: 120 },
-              flex: { xs: '1 1 100%', sm: '0 1 auto' }
-            }}
+        <Box sx={{ 
+          backgroundColor: 'rgba(0, 0, 0, 0.02)', 
+          borderRadius: 1, 
+          p: { xs: 1.5, sm: 2 },
+          mb: 3
+        }}>
+          {/* Première rangée: filtres principaux */}
+          <Stack 
+            direction={{ xs: 'column', sm: 'row' }} 
+            spacing={2}
+            sx={{ mb: 2 }}
           >
-            <InputLabel>Année</InputLabel>
-            <Select
-              value={formData.year || ''}
-              label="Année"
-              onChange={handleInputChange('year')}
-              displayEmpty
+            <FormControl
+              size="small"
+              sx={{
+                minWidth: { xs: '100%', sm: 120 },
+                flex: { xs: '1', sm: '1' }
+              }}
             >
-              <MenuItem value="">Toutes années</MenuItem>
-              {[2020, 2021, 2022, 2023, 2024].map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          
-          <FormControl
-            size="small"
-            sx={{
-              minWidth: { xs: '100%', sm: 120 },
-              flex: { xs: '1 1 100%', sm: '0 1 auto' }
-            }}
-          >
-            <InputLabel>Version</InputLabel>
-            <Select
-              value={formData.version}
-              label="Version"
-              onChange={handleInputChange('version')}
+              <InputLabel>Année</InputLabel>
+              <Select
+                value={formData.year || ''}
+                label="Année"
+                onChange={handleInputChange('year')}
+                displayEmpty
+              >
+                <MenuItem value="">Toutes années</MenuItem>
+                {[2020, 2021, 2022, 2023, 2024].map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <FormControl
+              size="small"
+              sx={{
+                minWidth: { xs: '100%', sm: 120 },
+                flex: { xs: '1', sm: '1' }
+              }}
             >
-              {['M3RWD', 'LRRWD', 'LRAWD', 'PAWD'].map((version) => (
-                <MenuItem key={version} value={version}>
-                  {version}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              <InputLabel>Version</InputLabel>
+              <Select
+                value={formData.version}
+                label="Version"
+                onChange={handleInputChange('version')}
+              >
+                {['M3RWD', 'LRRWD', 'LRAWD', 'PAWD'].map((version) => (
+                  <MenuItem key={version} value={version}>
+                    {version}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <TextField
+              label="Couleur"
+              value={formData.paint || ''}
+              onChange={handleInputChange('paint') as (e: ChangeEvent<HTMLInputElement>) => void}
+              placeholder="Ex: WHITE, BLACK..."
+              size="small"
+              sx={{
+                flex: { xs: '1', sm: '1' }
+              }}
+            />
+            
+            <TextField
+              label="Points"
+              type="number"
+              value={formData.points}
+              onChange={handleInputChange('points') as (e: ChangeEvent<HTMLInputElement>) => void}
+              inputProps={{ min: "1" }}
+              size="small"
+              sx={{
+                flex: { xs: '1', sm: '1' }
+              }}
+            />
+          </Stack>
           
-          <TextField
-            label="Couleur"
-            value={formData.paint || ''}
-            onChange={handleInputChange('paint') as (e: ChangeEvent<HTMLInputElement>) => void}
-            placeholder="Ex: WHITE, BLACK..."
-            size="small"
-            sx={{
-              width: { xs: '100%', sm: '120px' },
-              flex: { xs: '1 1 100%', sm: '0 1 auto' }
-            }}
-          />
-          
-          <TextField
-            label="Points"
-            type="number"
-            value={formData.points}
-            onChange={handleInputChange('points') as (e: ChangeEvent<HTMLInputElement>) => void}
-            inputProps={{ min: "1" }}
-            size="small"
-            sx={{
-              width: { xs: '100%', sm: '100px' },
-              flex: { xs: '1 1 100%', sm: '0 1 auto' }
-            }}
-          />
-        </Stack>
+          {/* Deuxième rangée: période */}
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'center',
+            borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+            pt: 2
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              width: { xs: '100%', sm: '50%' }
+            }}>
+              <Box component="span" sx={{ 
+                mr: 1, 
+                color: 'text.secondary', 
+                fontSize: '0.875rem',
+                whiteSpace: 'nowrap'
+              }}>
+                Période:
+              </Box>
+              <FormControl
+                fullWidth
+                size="small"
+              >
+                <Select
+                  value={formData.timeRange || 'all'}
+                  onChange={handleInputChange('timeRange')}
+                  displayEmpty
+                  variant="outlined"
+                >
+                  <MenuItem value="all">Depuis toujours</MenuItem>
+                  <MenuItem value="1y">1 an</MenuItem>
+                  <MenuItem value="6m">6 mois</MenuItem>
+                  <MenuItem value="3m">3 mois</MenuItem>
+                  <MenuItem value="1m">1 mois</MenuItem>
+                  <MenuItem value="1w">1 semaine</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
+        </Box>
 
-        <ChartContainer color={color}  params={formData} />
-
-        
+        <ChartContainer color={color} params={formData} />
       </CardContent>
     </Card>
   );

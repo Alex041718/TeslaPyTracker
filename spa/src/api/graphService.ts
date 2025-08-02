@@ -9,6 +9,7 @@ export interface GraphQueryParams {
     version: string;   // Version Tesla à filtrer (obligatoire)
     paint?: string;    // Couleur de peinture à filtrer (optionnel)
     points: number;    // Nombre de points souhaités (obligatoire)
+    timeRange?: string; // Plage temporelle (optionnel - 'all', '1y', '6m', '3m', '1m', '1w')
 }
 
 export const graphService = {
@@ -43,6 +44,11 @@ export const graphService = {
         // Ajout du paramètre paint s'il est spécifié
         if (params.paint) {
             queryParams.paint = params.paint;
+        }
+        
+        // Ajout du paramètre timeRange s'il est spécifié
+        if (params.timeRange) {
+            queryParams.time_range = params.timeRange;
         }
 
         // Construction de l'URL avec les paramètres de requête

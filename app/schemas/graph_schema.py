@@ -29,3 +29,4 @@ class GraphQueryArgsSchema(Schema):
     version = fields.String(description="Version Tesla à filtrer")
     paint = fields.String(description="Couleur de peinture à filtrer")
     points = fields.Integer(description="Nombre de points souhaités", load_default=25)
+    time_range = fields.String(description="Plage temporelle (all, 1y, 6m, 3m, 1m, 1w)", load_default="all")

@@ -17,6 +17,7 @@ class MetaDTO:
     normalized_points: int
     year: Optional[int] = None
     version: Optional[str] = None
+    time_range: Optional[str] = None
 
 @dataclass
 class LinksDTO:
